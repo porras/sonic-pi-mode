@@ -30,6 +30,8 @@
 ;;; Code:
 (require 'osc)
 (require 'eieio)
+; taken from sonic-pi.el
+(require 'sonic-pi-console)
 
 (defvar sonic-pi-mode-map
   (let ((map (make-sparse-keymap)))
@@ -46,7 +48,7 @@
 ;;;###autoload
 (define-minor-mode sonic-pi-mode
   "Minor mode to send code to a running instance of Sonic Pi"
-  :lighter "π"
+  :lighter "π)))"
   :keymap sonic-pi-mode-map
   (if sonic-pi-mode
       (message "Sonic Pi mode activated")
@@ -98,6 +100,7 @@
 
 ;; TODO: This function is a mess, almost everything happens here! Refactor
 (defun sonic-pi--make-connection ()
+  (sonic-pi-messages-buffer-init)
   (message "Starting Sonic Pi daemon...")
   (let ((c (sonic-pi--connection))
         (daemon (start-process-shell-command "sonic-pi-daemon" "sonic-pi-daemon-output" sonic-pi-daemon-path)))
@@ -109,7 +112,7 @@
                                    (oset c :keep-alive-timer (run-with-timer 30 30 (lambda ()
                                                                                      (osc-send-message (oref c :keep-alive-client) "/daemon/keep-alive" token))))
                                    (oset c :api-client (osc-make-client 'local gui-send-to-server))
-                                   (oset c :log-server (osc-make-server 'local gui-listen-to-server (lambda (&rest args) (message (format "%s" args))))))
+                                   (oset c :log-server (osc-make-server 'local gui-listen-to-server (lambda (path &rest args) (sonic-pi-log-message path args)))))
                                  (set-process-filter daemon nil)
                                  (oset c :daemon daemon)))
     (while (not (slot-boundp c :daemon)) (accept-process-output daemon)) ; wait until we get the output
@@ -127,6 +130,7 @@
   (delete-process (oref c :api-client))
   (delete-process (oref c :keep-alive-client))
   (delete-process (oref c :log-server))
-  (delete-process (oref c :daemon)))
+  (delete-process (oref c :daemon))
+  (sonic-pi-messages-buffer-cleanup))
 
 (provide 'sonic-pi-mode)
