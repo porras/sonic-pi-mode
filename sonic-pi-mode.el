@@ -6,7 +6,7 @@
 ;; Version: 0.1
 ;; Keywords: languages
 ;; URL: https://github.com/porras/sonic-pi-mode
-;; Package-Requires: ((emacs "25.1") (osc "0.3"))
+;; Package-Requires: ((emacs "25.1") (osc "0.3") (f "0.1"))
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -32,6 +32,10 @@
 ;; taken from sonic-pi.el
 (require 'sonic-pi-console)
 
+(defcustom sonic-pi-daemon-command nil
+  "Path to the Ruby daemon file inside the Sonic Pi install. For a standard install it should be '<sonic-pi-path>/app/server/ruby/bin/daemon.rb'. If you installed Sonic Pi via flatpak, it should be 'flatpak run --command=\"/app/app/server/ruby/bin/daemon.rb\" net.sonic_pi.SonicPi'."
+  :type 'string :group 'sonic-pi)
+
 (defvar sonic-pi-mode-map
   (let ((map (make-sparse-keymap)))
     (define-key map (kbd "C-c c") 'sonic-pi-connect)
@@ -40,8 +44,6 @@
     (define-key map (kbd "C-c d") 'sonic-pi-disconnect)
     map))
 
-(defvar sonic-pi-daemon-path "flatpak run --command=\"/app/app/server/ruby/bin/daemon.rb\" net.sonic_pi.SonicPi")
-;; (defvar sonic-pi-daemon-path "~/Code/sonic-pi/app/server/ruby/bin/daemon.rb")
 (defvar sonic-pi-connection (make-instance sonic-pi--connection))
 
 ;;;###autoload

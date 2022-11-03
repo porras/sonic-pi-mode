@@ -38,6 +38,20 @@ I might consider to submit this package to MELPA, but for now you have to instal
 | <kbd>C-c s</kbd> | `sonic-pi-stop`        | Sends a `stop-all-jobs` command to the running Sonic Pi (equivalent to <kbd>Alt+S</kbd> on Sonic Pi)           |
 | <kbd>C-c d</kbd> | `sonic-pi-disconnect`  | Closes the current connection to Sonic Pi                                                                      |
 
+## Configuration
+
+You have to set the `sonic-pi-daemon-command` variable, with the path to the ruby file of the daemon. On a standard Sonic Pi install, it should be:
+
+```elisp
+(setq sonic-pi-daemon-command "<path-to-sonic-pi>/app/server/ruby/bin/daemon.rb")
+```
+
+If you installed Sonic Pi via Flatpak, it's a bit more complicated:
+
+```elisp
+(setq sonic-pi-daemon-command "flatpak run --command=\"/app/app/server/ruby/bin/daemon.rb\" net.sonic_pi.SonicPi")
+```
+
 ## Roadmap
 
 - [ ] Better error feedback when it's not possible to connect to Sonic Pi (because it doesn't start properly, or any other problem).

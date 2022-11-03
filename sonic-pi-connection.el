@@ -15,7 +15,7 @@
   (message "Starting Sonic Pi daemon...")
   (with-slots (daemon api-client keep-alive-client keep-alive-timer log-server token connected?) c
     (when (not connected?)
-      (setf daemon (start-process-shell-command "sonic-pi-daemon" "*sonic-pi-daemon-output*" sonic-pi-daemon-path))
+      (setf daemon (start-process-shell-command "sonic-pi-daemon" "*sonic-pi-daemon-output*" sonic-pi-daemon-command))
       (set-process-filter daemon (lambda (_ output)
                                    (cl-destructuring-bind (reported-daemon-keep-alive reported-gui-listen-to-server reported-gui-send-to-server reported-scsynth reported-osc-cues reported-tau-api reported-tau-phx reported-token)
                                        (seq-map #'string-to-number (split-string output " "))
@@ -50,3 +50,5 @@
       (sonic-pi-messages-buffer-cleanup)
       (setf connected? nil)))
   (message "Sonic Pi disconnected"))
+
+(provide 'sonic-pi-connection)
