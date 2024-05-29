@@ -78,3 +78,5 @@
   (run-with-timer 0.2 nil #'invert-face 'mode-line))
 
 (provide 'sonic-pi-mode)
+
+;;; sonic-pi-mode.el ends here
