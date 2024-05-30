@@ -6,7 +6,7 @@
 ;; Version: 0.1
 ;; Keywords: languages
 ;; URL: https://github.com/porras/sonic-pi-mode
-;; Package-Requires: ((emacs "25.1") (osc "0.3") (f "0.1"))
+;; Package-Requires: ((emacs "29.1") (osc "0.3") (f "0.1"))
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
