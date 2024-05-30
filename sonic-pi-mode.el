@@ -6,7 +6,7 @@
 ;; Version: 0.1
 ;; Keywords: languages
 ;; URL: https://github.com/porras/sonic-pi-mode
-;; Package-Requires: ((emacs "29.1") (osc "0.3") (f "0.1"))
+;; Package-Requires: ((emacs "29.1") (osc "0.3") (f "0.1") (transient "0.6.0"))
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -28,6 +28,7 @@
 ;; See documentation at https://github.com/porras/sonic-pi-mode
 
 ;;; Code:
+(require 'transient)
 (require 'sonic-pi-connection)
 ;; taken from sonic-pi.el
 (require 'sonic-pi-console)
@@ -36,10 +37,15 @@
   "Path to the Ruby daemon file inside the Sonic Pi install. For a standard install it should be '<sonic-pi-path>/app/server/ruby/bin/daemon.rb'. If you installed Sonic Pi via flatpak, it should be 'flatpak run --command=\"/app/app/server/ruby/bin/daemon.rb\" net.sonic_pi.SonicPi'."
   :type 'string :group 'sonic-pi)
 
+(defcustom sonic-pi-volume 0.8
+  "Initial volume for Sonic Pi. 0.0 is silent, 1.0 is full volume."
+  :type 'float :group 'sonic-pi)
+
 (defvar-keymap sonic-pi-mode-prefix-map
   "c" #'sonic-pi-connect
   "r" #'sonic-pi-send-buffer
   "s" #'sonic-pi-stop
+  "v" #'sonic-pi-control-volume
   "d" #'sonic-pi-disconnect)
 
 (defvar sonic-pi-connection (make-instance sonic-pi--connection))
@@ -64,11 +70,40 @@
 (defun sonic-pi-send-buffer ()
   (interactive)
   (sonic-pi--flash-mode-line)
+  (sonic-pi--send-volume)
   (sonic-pi--connection--send sonic-pi-connection "/run-code" (buffer-string)))
 
 (defun sonic-pi-stop ()
   (interactive)
   (sonic-pi--connection--send sonic-pi-connection "/stop-all-jobs"))
+
+(transient-define-prefix sonic-pi-control-volume ()
+  "Control Sonic Pi volume."
+  [:description (lambda () (format "Sonic Pi volume: %.2f" sonic-pi-volume))
+                ("<up>" "Increase" sonic-pi--volume-increase :transient t)
+                ("<down>" "Decrease" sonic-pi--volume-decrease :transient t)
+                ("s" "Set" sonic-pi--volume-set)
+                ("<escape>" "Close" ignore)])
+
+(defun sonic-pi--send-volume ()
+  (when (sonic-pi--connection--connected? sonic-pi-connection)
+    (sonic-pi--connection--send sonic-pi-connection "/run-code" (format "set_volume! %f" sonic-pi-volume))))
+
+;; TODO: sonic-pi--volume-(increase|decrease) are almost identical, maybe they can be refactored.
+(defun sonic-pi--volume-increase ()
+  (interactive)
+  (setq sonic-pi-volume (+ sonic-pi-volume 0.1))
+  (sonic-pi--send-volume))
+
+(defun sonic-pi--volume-decrease ()
+  (interactive)
+  (setq sonic-pi-volume (- sonic-pi-volume 0.1))
+  (sonic-pi--send-volume))
+
+(defun sonic-pi--volume-set ()
+  (interactive)
+  (setq sonic-pi-volume (read-number "Sonic Pi volume (0.00-1.00): "))
+  (sonic-pi--send-volume))
 
 (defun sonic-pi--flash-mode-line ()
   "Taken from https://www.emacswiki.org/emacs/AlarmBell#h5o-3"

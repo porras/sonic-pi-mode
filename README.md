@@ -31,12 +31,13 @@ I might consider to submit this package to MELPA, but for now you have to instal
 
 <kbd>M-x</kbd> `sonic-pi-mode` to enable the following commands (with a default keybinding):
 
-| Keybinding         | Command                |                                                                                                                |
-|--------------------|------------------------|----------------------------------------------------------------------------------------------------------------|
-| <kbd>C-c , c</kbd> | `sonic-pi-connect`     | Starts the Sonic Pi daemon on the background and connects to it.                                               |
-| <kbd>C-c , r</kbd> | `sonic-pi-send-buffer` | Sends the contents of the current buffer to the running Sonic Pi (equivalent to <kbd>Alt+S</kbd> on Sonic Pi). |
-| <kbd>C-c , s</kbd> | `sonic-pi-stop`        | Sends a `stop-all-jobs` command to the running Sonic Pi (equivalent to <kbd>Alt+S</kbd> on Sonic Pi)           |
-| <kbd>C-c , d</kbd> | `sonic-pi-disconnect`  | Closes the current connection to Sonic Pi                                                                      |
+| Keybinding         | Command                   |                                                                                                                |
+|--------------------+---------------------------+----------------------------------------------------------------------------------------------------------------|
+| <kbd>C-c , c</kbd> | `sonic-pi-connect`        | Starts the Sonic Pi daemon on the background and connects to it.                                               |
+| <kbd>C-c , r</kbd> | `sonic-pi-send-buffer`    | Sends the contents of the current buffer to the running Sonic Pi (equivalent to <kbd>Alt+S</kbd> on Sonic Pi). |
+| <kbd>C-c , s</kbd> | `sonic-pi-stop`           | Sends a `stop-all-jobs` command to the running Sonic Pi (equivalent to <kbd>Alt+S</kbd> on Sonic Pi)           |
+| <kbd>C-c , v</kbd> | `sonic-pi-control-volume` | Opens a menu to control Sonic Pi volume.                                                                       |
+| <kbd>C-c , d</kbd> | `sonic-pi-disconnect`     | Closes the current connection to Sonic Pi                                                                      |
 
 To use a different prefix than <kbd>C-c ,</kbd>, assign a different key binding to `sonic-pi-mode-prefix-map`.
 
@@ -60,12 +61,3 @@ If you installed Sonic Pi via Flatpak, it's a bit more complicated:
 - [x] Manage the launch of the Sonic Pi daemon instead of relying on it being running.
 - [x] Get logs back from Sonic Pi and display them on a buffer.
 - [ ] Attempt to contribute all this back to [sonic-pi.el](https://github.com/repl-electric/sonic-pi.el) on a backwards-compatible way (so that it works with both Sonic Pi 3 and 4).
-
-## Problems
-
-### The sound is bad!
-
-The daemon starts by default with the master volume at maximum level and that
-causes poor sound. While it would be nice to add commands to control the volume
-(like in the Sonic Pi editor), in the meantime the simplest way to avoid it is a
-`set_volume! 0.7` (or whatever level you prefer) in the buffer.

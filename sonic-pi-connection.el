@@ -9,7 +9,7 @@
    (keep-alive-timer :type timer)
    (log-server :type process)
    (token :type number)
-   (connected? :initform nil :type boolean)))
+   (connected? :initform nil :type boolean :accessor sonic-pi--connection--connected?)))
 
 (cl-defmethod sonic-pi--connection--connect ((c sonic-pi--connection))
   (sonic-pi-messages-buffer-init)
