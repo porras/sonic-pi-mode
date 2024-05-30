@@ -36,13 +36,11 @@
   "Path to the Ruby daemon file inside the Sonic Pi install. For a standard install it should be '<sonic-pi-path>/app/server/ruby/bin/daemon.rb'. If you installed Sonic Pi via flatpak, it should be 'flatpak run --command=\"/app/app/server/ruby/bin/daemon.rb\" net.sonic_pi.SonicPi'."
   :type 'string :group 'sonic-pi)
 
-(defvar sonic-pi-mode-map
-  (let ((map (make-sparse-keymap)))
-    (define-key map (kbd "C-c c") 'sonic-pi-connect)
-    (define-key map (kbd "C-c r") 'sonic-pi-send-buffer)
-    (define-key map (kbd "C-c s") 'sonic-pi-stop)
-    (define-key map (kbd "C-c d") 'sonic-pi-disconnect)
-    map))
+(defvar-keymap sonic-pi-mode-prefix-map
+  "c" #'sonic-pi-connect
+  "r" #'sonic-pi-send-buffer
+  "s" #'sonic-pi-stop
+  "d" #'sonic-pi-disconnect)
 
 (defvar sonic-pi-connection (make-instance sonic-pi--connection))
 
@@ -50,7 +48,7 @@
 (define-minor-mode sonic-pi-mode
   "Minor mode to send code to a running instance of Sonic Pi"
   :lighter "π)))"
-  :keymap sonic-pi-mode-map
+  :keymap (define-keymap "C-c ," sonic-pi-mode-prefix-map)
   (if sonic-pi-mode
       (message "Sonic Pi mode activated")
     (message "Sonic Pi mode deactivated")))

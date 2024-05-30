@@ -31,12 +31,14 @@ I might consider to submit this package to MELPA, but for now you have to instal
 
 <kbd>M-x</kbd> `sonic-pi-mode` to enable the following commands (with a default keybinding):
 
-| Keybinding       | Command                |                                                                                                                |
-|------------------|------------------------|----------------------------------------------------------------------------------------------------------------|
-| <kbd>C-c c</kbd> | `sonic-pi-connect`     | Starts the Sonic Pi daemon on the background and connects to it.                                               |
-| <kbd>C-c r</kbd> | `sonic-pi-send-buffer` | Sends the contents of the current buffer to the running Sonic Pi (equivalent to <kbd>Alt+S</kbd> on Sonic Pi). |
-| <kbd>C-c s</kbd> | `sonic-pi-stop`        | Sends a `stop-all-jobs` command to the running Sonic Pi (equivalent to <kbd>Alt+S</kbd> on Sonic Pi)           |
-| <kbd>C-c d</kbd> | `sonic-pi-disconnect`  | Closes the current connection to Sonic Pi                                                                      |
+| Keybinding         | Command                |                                                                                                                |
+|--------------------|------------------------|----------------------------------------------------------------------------------------------------------------|
+| <kbd>C-c , c</kbd> | `sonic-pi-connect`     | Starts the Sonic Pi daemon on the background and connects to it.                                               |
+| <kbd>C-c , r</kbd> | `sonic-pi-send-buffer` | Sends the contents of the current buffer to the running Sonic Pi (equivalent to <kbd>Alt+S</kbd> on Sonic Pi). |
+| <kbd>C-c , s</kbd> | `sonic-pi-stop`        | Sends a `stop-all-jobs` command to the running Sonic Pi (equivalent to <kbd>Alt+S</kbd> on Sonic Pi)           |
+| <kbd>C-c , d</kbd> | `sonic-pi-disconnect`  | Closes the current connection to Sonic Pi                                                                      |
+
+To use a different prefix than <kbd>C-c ,</kbd>, assign a different key binding to `sonic-pi-mode-prefix-map`.
 
 ## Configuration
 
