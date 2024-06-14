@@ -1,2 +1,3 @@
 /.cask/
 *.elc
+/sonic-pi-mode-autoloads.el
