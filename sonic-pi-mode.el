@@ -34,11 +34,16 @@
 (require 'sonic-pi-console)
 
 (defcustom sonic-pi-daemon-command nil
-  "Path to the Ruby daemon file inside the Sonic Pi install. For a standard install it should be '<sonic-pi-path>/app/server/ruby/bin/daemon.rb'. If you installed Sonic Pi via flatpak, it should be 'flatpak run --command=\"/app/app/server/ruby/bin/daemon.rb\" net.sonic_pi.SonicPi'."
+  "Path to the Ruby daemon file inside the Sonic Pi install.
+For a standard install it should be
+\"<sonic-pi-path>/app/server/ruby/bin/daemon.rb\".  If you installed Sonic Pi
+via flatpak, it should be
+\"flatpak run --command=\\\"/app/app/server/ruby/bin/daemon.rb\\\"
+net.sonic_pi.SonicPi\"."
   :type 'string :group 'sonic-pi)
 
 (defcustom sonic-pi-volume 0.8
-  "Initial volume for Sonic Pi. 0.0 is silent, 1.0 is full volume."
+  "Initial volume for Sonic Pi.  0.0 is silent, 1.0 is full volume."
   :type 'float :group 'sonic-pi)
 
 (defvar-keymap sonic-pi-mode-prefix-map
@@ -48,11 +53,11 @@
   "v" #'sonic-pi-control-volume
   "d" #'sonic-pi-disconnect)
 
-(defvar sonic-pi-connection (make-instance sonic-pi--connection))
+(defvar sonic-pi-connection (make-instance 'sonic-pi--connection))
 
 ;;;###autoload
 (define-minor-mode sonic-pi-mode
-  "Minor mode to send code to a running instance of Sonic Pi"
+  "Minor mode to send code to an instance of Sonic Pi."
   :lighter "π)))"
   :keymap (define-keymap "C-c ," sonic-pi-mode-prefix-map)
   (if sonic-pi-mode
@@ -60,20 +65,24 @@
     (message "Sonic Pi mode deactivated")))
 
 (defun sonic-pi-connect ()
+  "Start the Sonic Pi daemon and connect to it."
   (interactive)
   (sonic-pi--connection--connect sonic-pi-connection))
 
 (defun sonic-pi-disconnect ()
+  "Disconnect from the Sonic Pi daemon and stop it."
   (interactive)
   (sonic-pi--connection--disconnect sonic-pi-connection))
 
 (defun sonic-pi-send-buffer ()
+  "Send the current buffer content to Sonic Pi."
   (interactive)
   (sonic-pi--flash-mode-line)
   (sonic-pi--send-volume)
   (sonic-pi--connection--send sonic-pi-connection "/run-code" (buffer-string)))
 
 (defun sonic-pi-stop ()
+  "Stop playback in Sonic Pi."
   (interactive)
   (sonic-pi--connection--send sonic-pi-connection "/stop-all-jobs"))
 
@@ -85,28 +94,33 @@
                 ("s" "Set" sonic-pi--volume-set)
                 ("<escape>" "Close" ignore)])
 
-(defun sonic-pi--send-volume ()
-  (when (sonic-pi--connection--connected? sonic-pi-connection)
-    (sonic-pi--connection--send sonic-pi-connection "/run-code" (format "set_volume! %f" sonic-pi-volume))))
-
 ;; TODO: sonic-pi--volume-(increase|decrease) are almost identical, maybe they can be refactored.
 (defun sonic-pi--volume-increase ()
+  "Increase Sonic Pi volume by 0.1."
   (interactive)
   (setq sonic-pi-volume (+ sonic-pi-volume 0.1))
   (sonic-pi--send-volume))
 
 (defun sonic-pi--volume-decrease ()
+  "Decrease Sonic Pi volume by 0.1."
   (interactive)
   (setq sonic-pi-volume (- sonic-pi-volume 0.1))
   (sonic-pi--send-volume))
 
 (defun sonic-pi--volume-set ()
+  "Set Sonic Pi volume to a given value."
   (interactive)
   (setq sonic-pi-volume (read-number "Sonic Pi volume (0.00-1.00): "))
   (sonic-pi--send-volume))
 
+(defun sonic-pi--send-volume ()
+  "Send the current volume to Sonic Pi."
+  (when (sonic-pi--connection--connected? sonic-pi-connection)
+    (sonic-pi--connection--send sonic-pi-connection "/run-code" (format "set_volume! %f" sonic-pi-volume))))
+
 (defun sonic-pi--flash-mode-line ()
-  "Taken from https://www.emacswiki.org/emacs/AlarmBell#h5o-3"
+  "Flashes the mode line for some visual feedback.
+Taken from https://www.emacswiki.org/emacs/AlarmBell#h5o-3"
   (invert-face 'mode-line)
   (run-with-timer 0.2 nil #'invert-face 'mode-line))
 
