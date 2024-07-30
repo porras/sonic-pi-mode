@@ -13,7 +13,7 @@ deps:
 
 clean-elc:
 	${CASK} clean-elc
-	rm *-autoloads.el
+	rm -f *-autoloads.el
 
 clean: clean-elc
 	rm -rf .cask
